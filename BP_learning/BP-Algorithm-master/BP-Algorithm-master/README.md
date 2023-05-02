@@ -1,3 +1,5 @@
+# 瞎写测试测试
+
 # 上篇
 
 <div class="output_wrapper" id="output_wrapper_id" style="font-size: 16px; color: rgb(62, 62, 62); line-height: 1.6; word-spacing: 0px; letter-spacing: 0px; font-family: 'Helvetica Neue', Helvetica, 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;"><p style="font-size: inherit; color: inherit; line-height: inherit; padding: 0px; margin: 1.5em 0px;">反向传播算法（Backpropagation Algorithm，简称BP算法）是深度学习的重要思想基础，对于初学者来说也是必须要掌握的基础知识！本文希望以一个清晰的脉络和详细的说明，来让读者彻底明白BP算法的原理和计算过程。</p>
@@ -128,18 +130,13 @@
 
 ![图1 鸢尾花](https://upload-images.jianshu.io/upload_images/13056713-f8db8fb1a15c3442?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-
-
 鸢尾花数据集如图2所示，总共有三个品种的鸢尾花（setosa、versicolor和virginica），每个类别50条样本数据，每个样本有四个特征（花萼长度、花萼宽度、花瓣长度以及花瓣宽度）。
 
 ![图2 鸢尾花数据集](https://upload-images.jianshu.io/upload_images/13056713-05f644b8ac047aca?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-
-
 首先我们导入需要的包：
 
-
-``` python
+```python
 from csv import reader
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
@@ -148,10 +145,9 @@ import matplotlib.pyplot as plt
 import math
 ```
 
+接下来我们实现一个数据集的加载和预处理的函数 `load_dataset`：
 
-接下来我们实现一个数据集的加载和预处理的函数`load_dataset`：
-
-``` python
+```python
 def load_dataset(dataset_path, n_train_data):
     """加载数据集，对数据进行预处理，并划分训练集和验证集
     :param dataset_path: 数据集文件路径
@@ -191,12 +187,11 @@ def load_dataset(dataset_path, n_train_data):
     return train_data, val_data
 ```
 
-在`load_dataset`函数中，我们实现了数据集的读取、数据的归一化处理以及对数据集进行了`shuffle`操作等，最后函数返回了划分好的训练集和验证集。
+在 `load_dataset`函数中，我们实现了数据集的读取、数据的归一化处理以及对数据集进行了 `shuffle`操作等，最后函数返回了划分好的训练集和验证集。
 
 实现数据预处理之后，接下来我们开始实现BP算法的关键部分（**如果读者对算法原理有不清楚的地方，可以查看"一文彻底搞懂BP算法：原理推导+数据演示+项目实战（上篇）"**）。首先我们实现神经元的计算部分、激活函数以及激活函数的求导部分。
 
-
-``` python
+```python
 def fun_z(weights, inputs):
     """计算神经元的输入：z = weight * inputs + b
     :param weights: 网络参数（权重矩阵和偏置项）
@@ -227,17 +222,15 @@ def sigmoid_derivative(output):
     return output * (1.0 - output)
 ```
 
+函数 `fun_z`实现了公式"z = weight * inputs + b"，其中inputs是上一层网络的输出，weight是当前层的权重矩阵，b是当前层的偏置项，计算得到的z是当前层的输入。
 
-函数`fun_z`实现了公式"z = weight * inputs + b"，其中inputs是上一层网络的输出，weight是当前层的权重矩阵，b是当前层的偏置项，计算得到的z是当前层的输入。
+函数 `sigmoid`是Sigmoid激活函数的实现，将z作为激活函数的输入，计算得到当前层的输出，并传递到下一层。
 
-函数`sigmoid`是Sigmoid激活函数的实现，将z作为激活函数的输入，计算得到当前层的输出，并传递到下一层。
-
-函数`sigmoid_derivative`是Sigmoid函数求导的实现，在误差反向传播的时候需要用到。
+函数 `sigmoid_derivative`是Sigmoid函数求导的实现，在误差反向传播的时候需要用到。
 
 接下来我们实现BP网络的前向传播：
 
-
-``` python
+```python
 def forward_propagate(network, inputs):
     """前向传播计算
     :param network: 神经网络
@@ -254,11 +247,9 @@ def forward_propagate(network, inputs):
     return inputs
 ```
 
-
 前向计算的过程比较简单，和我们在上篇中介绍的计算过程一致。稍微麻烦一点的是误差反向传播的计算：
 
-
-``` python
+```python
 def backward_propagate_error(network, actual_label):
     """误差进行反向传播
     :param network: 神经网络
@@ -284,13 +275,11 @@ def backward_propagate_error(network, actual_label):
             neuron['delta'] = errors[j] * sigmoid_derivative(neuron['output'])
 ```
 
-
 误差反向传播过程中，我们首先需要根据模型的输出来计算得到误差，然后计算输出层的误差项。得到输出层的误差项之后，我们就可以根据上篇中介绍的"第k层神经元的误差项是由第k+1层的误差项乘以第k+1层的权重，再乘以第k层激活函数的导数得到"来计算其它层的误差项。
 
 在计算得到每一层的误差项之后，我们根据上篇中介绍的权重矩阵和偏置项的更新公式来更新参数：
 
-
-``` python
+```python
 def update_parameters(network, row, l_rate):
     """利用误差更新神经网络的参数（权重矩阵和偏置项）
     :param network: 神经网络
@@ -310,11 +299,9 @@ def update_parameters(network, row, l_rate):
             neuron['weights'][-1] += l_rate * neuron['delta']
 ```
 
-
 到这里所有的关键部分我们都已经实现了，接下来我们实现网络的初始化以及网络的训练部分，首先实现网络的初始化：
 
-
-``` python
+```python
 def initialize_network(n_inputs, n_hidden, n_outputs):
     """初始化BP网络（初始化隐藏层和输出层的参数：权重矩阵和偏置项）
     :param n_inputs: 特征列数
@@ -332,13 +319,11 @@ def initialize_network(n_inputs, n_hidden, n_outputs):
     return network
 ```
 
-
 这里我们初始化了一个两层神经网络（一个隐藏层和一个输出层）。在初始化参数的时候，我们将权重矩阵和偏置项放在了一个数组中（"weights"），数组的最后一个元素是偏置项，前面的元素是权重矩阵。
 
 接下来我们实现模型的训练部分：
 
-
-``` python
+```python
 def train(train_data, l_rate, epochs, n_hidden, val_data):
     """训练神经网络（迭代n_epoch个回合）
     :param train_data: 训练集
@@ -378,11 +363,9 @@ def train(train_data, l_rate, epochs, n_hidden, val_data):
     return network
 ```
 
+我们总共训练了 `epochs`个回合，这里我们使用随机梯度下降来优化模型，因此每次都用一个样本来更新参数。接下来我们实现一个函数用来验证模型的效果：
 
-我们总共训练了`epochs`个回合，这里我们使用随机梯度下降来优化模型，因此每次都用一个样本来更新参数。接下来我们实现一个函数用来验证模型的效果：
-
-
-``` python
+```python
 def validation(network, val_data):
     """测试模型在验证集上的效果
     :param network: 神经网络
@@ -403,11 +386,9 @@ def validation(network, val_data):
     return accuracy
 ```
 
-
 训练过程中的每一个回合，我们都用模型对验证集进行一次预测，并将预测的结果保存，用来绘制训练过程中模型在验证集上的准确率的变化过程。准确率的计算以及使用模型进行预测的实现如下：
 
-
-``` python
+```python
 def accuracy_calculation(actual_label, predicted_label):
     """计算准确率
     :param actual_label: 真实类标
@@ -431,11 +412,9 @@ def predict(network, row):
     return outputs.index(max(outputs))
 ```
 
-
 最后我们运行代码：
 
-
-``` python
+```python
 if __name__ == "__main__":
     file_path = './iris.csv'
 
@@ -450,7 +429,6 @@ if __name__ == "__main__":
     # 训练模型
     network = train(train_data, l_rate, epochs, n_hidden, val_data)
 ```
-
 
 训练过程如图3所示：
 
